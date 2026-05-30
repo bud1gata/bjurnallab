@@ -75,6 +75,19 @@ function updateProfileUI() {
                 ctaWrapper.classList.remove('hidden');
             }
         }
+
+        // Toggle visibility of the Add User button in the header
+        const addUserBtn = document.getElementById('admin-add-user-btn');
+        if (addUserBtn) {
+            if (user.role === 'Admin') {
+                addUserBtn.classList.remove('hidden');
+            } else {
+                addUserBtn.classList.add('hidden');
+            }
+        }
+    } else {
+        const addUserBtn = document.getElementById('admin-add-user-btn');
+        if (addUserBtn) addUserBtn.classList.add('hidden');
     }
 }
 
@@ -265,6 +278,73 @@ window._handleChangePassword = async (e) => {
         if (errBanner) {
             errBanner.innerText = 'Terjadi kesalahan jaringan.';
             errBanner.classList.remove('hidden');
+        }
+    }
+};
+
+// Global handler: Add user modal controls
+window._openAddUserModal = () => {
+    const modal = document.getElementById('add-user-modal');
+    const errBanner = document.getElementById('add-user-error-banner');
+    if (errBanner) errBanner.classList.add('hidden');
+    if (modal) modal.classList.remove('hidden');
+};
+
+window._closeAddUserModal = () => {
+    const modal = document.getElementById('add-user-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.querySelector('form').reset();
+    }
+};
+
+window._handleAddUser = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const errBanner = document.getElementById('add-user-error-banner');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    if (errBanner) errBanner.classList.add('hidden');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> Memproses...';
+    }
+
+    const payload = {
+        name: form.name.value,
+        email: form.email.value,
+        password: form.password.value,
+        role: form.role.value
+    };
+
+    try {
+        const res = await fetch('http://localhost:5000/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            alert(`Pengguna baru (${data.name}) dengan peran ${data.role} berhasil didaftarkan!`);
+            window._closeAddUserModal();
+        } else {
+            if (errBanner) {
+                errBanner.innerText = data.message || 'Gagal menambahkan pengguna.';
+                errBanner.classList.remove('hidden');
+            }
+        }
+    } catch (err) {
+        console.error(err);
+        if (errBanner) {
+            errBanner.innerText = 'Terjadi kesalahan jaringan.';
+            errBanner.classList.remove('hidden');
+        }
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Tambah Pengguna';
         }
     }
 };
