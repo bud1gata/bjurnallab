@@ -18,10 +18,13 @@ export const getLoans = async (req, res) => {
 // @access  Public
 export const createLoan = async (req, res) => {
     try {
-        const { borrower, items, expectedReturnDate, notes } = req.body;
+        const { borrower, borrowerName, borrowerRole, itemName, items, expectedReturnDate, notes } = req.body;
         
         const loan = await Loan.create({
             borrower,
+            borrowerName,
+            borrowerRole,
+            itemName,
             items,
             expectedReturnDate,
             notes

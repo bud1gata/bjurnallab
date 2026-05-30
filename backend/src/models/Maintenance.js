@@ -4,6 +4,9 @@ const maintenanceSchema = new mongoose.Schema({
     item: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Inventory',
+    },
+    itemName: {
+        type: String,
         required: true,
     },
     technician: {

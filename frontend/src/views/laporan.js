@@ -1,11 +1,61 @@
-export default function LaporanView() {
+const API_URL = 'http://localhost:5000/api/maintenance';
+
+function formatDate(d) {
+    if (!d) return '-';
+    return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function formatCurrency(n) {
+    if (!n || n === 0) return '-';
+    return new Intl.NumberFormat('id-ID').format(n);
+}
+
+function getStatusBadge(status) {
+    const map = {
+        'Selesai': 'bg-[#e6f4ea] text-[#137333]',
+        'Proses': 'bg-[#fef7e0] text-[#b06000]',
+        'Batal': 'bg-[#fce8e6] text-[#c5221f]',
+    };
+    return map[status] || 'bg-surface-variant text-on-surface-variant';
+}
+
+export default async function LaporanView() {
+    let records = [];
+    try {
+        const res = await fetch(API_URL);
+        if (res.ok) records = await res.json();
+    } catch (e) {
+        console.error('Error fetching maintenance:', e);
+    }
+
+    const totalCost = records.reduce((sum, r) => sum + (r.cost || 0), 0);
+    const totalRepairs = records.length;
+
+    let rowsHTML = '';
+    if (records.length === 0) {
+        rowsHTML = `<tr><td colspan="6" class="py-8 text-center text-on-surface-variant font-body-md">Belum ada data pemeliharaan.</td></tr>`;
+    } else {
+        rowsHTML = records.map((r, i) => `
+            <tr class="border-b border-outline-variant/20 hover:bg-surface-container/30 transition-colors ${i % 2 !== 0 ? 'bg-surface-container-lowest/50' : ''}">
+                <td class="p-4 text-on-surface whitespace-nowrap">${formatDate(r.date)}</td>
+                <td class="p-4 font-semibold text-primary">${r.itemName || '-'}</td>
+                <td class="p-4 text-on-surface-variant">${r.type}</td>
+                <td class="p-4 text-on-surface">${formatCurrency(r.cost)}</td>
+                <td class="p-4 text-on-surface-variant max-w-xs truncate">${r.notes || '-'}</td>
+                <td class="p-4">
+                    <span class="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${getStatusBadge(r.status)}">${r.status}</span>
+                </td>
+            </tr>
+        `).join('');
+    }
+
     return `
     <div class="mb-stack-lg">
         <h1 class="font-display-lg text-display-lg text-primary mb-2">Laporan &amp; Pemeliharaan</h1>
         <p class="font-body-md text-body-md text-on-surface-variant">Hasilkan laporan komprehensif dan pantau riwayat pemeliharaan aset laboratorium.</p>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-stack-lg">
-        <!-- Left Column: Report Generator & Summary -->
+        <!-- Left Column -->
         <div class="lg:col-span-4 flex flex-col gap-stack-lg">
             <!-- Report Generator Form -->
             <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-stack-md">
@@ -53,59 +103,29 @@ export default function LaporanView() {
                     </button>
                 </form>
             </div>
-            <!-- Maintenance Trends Visual Summary -->
+            <!-- Summary -->
             <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-stack-md flex-grow">
                 <h3 class="font-headline-sm text-headline-sm text-primary mb-4">Tren Pemeliharaan</h3>
-                <p class="font-label-md text-label-md text-on-surface-variant mb-6 uppercase tracking-wider">30 Hari Terakhir</p>
+                <p class="font-label-md text-label-md text-on-surface-variant mb-6 uppercase tracking-wider">Seluruh Periode</p>
                 <div class="space-y-4">
                     <div class="flex justify-between items-end">
                         <div>
-                            <p class="font-display-lg text-display-lg text-primary">12</p>
+                            <p class="font-display-lg text-display-lg text-primary">${totalRepairs}</p>
                             <p class="font-body-md text-body-md text-on-surface-variant">Total Perbaikan</p>
-                        </div>
-                        <div class="bg-error-container text-on-error-container px-2 py-1 rounded font-label-md text-label-md flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[14px]">trending_up</span>
-                            +2 dari bln lalu
                         </div>
                     </div>
                     <div class="pt-4 border-t border-outline-variant/30">
                         <p class="font-label-md text-label-md text-on-surface-variant mb-2">Estimasi Biaya</p>
-                        <p class="font-headline-md text-headline-md text-primary">Rp 1.450.000</p>
-                    </div>
-                    <!-- Dummy Bar Chart representation -->
-                    <div class="h-24 flex items-end gap-2 pt-4">
-                        <div class="w-1/6 bg-secondary/20 rounded-t h-[30%]"></div>
-                        <div class="w-1/6 bg-secondary/40 rounded-t h-[60%]"></div>
-                        <div class="w-1/6 bg-secondary/30 rounded-t h-[40%]"></div>
-                        <div class="w-1/6 bg-secondary/80 rounded-t h-[90%] relative group cursor-pointer">
-                            <!-- Tooltip -->
-                            <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-                                Minggu 4: 5 Perbaikan
-                            </div>
-                        </div>
-                        <div class="w-1/6 bg-secondary/50 rounded-t h-[50%]"></div>
-                        <div class="w-1/6 bg-secondary/20 rounded-t h-[20%]"></div>
-                    </div>
-                    <div class="flex justify-between font-label-md text-[10px] text-on-surface-variant">
-                        <span>M1</span>
-                        <span>M2</span>
-                        <span>M3</span>
-                        <span>M4</span>
-                        <span>M5</span>
-                        <span>M6</span>
+                        <p class="font-headline-md text-headline-md text-primary">Rp ${formatCurrency(totalCost)}</p>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Right Column: Maintenance Log Table -->
+        <!-- Right Column: Table -->
         <div class="lg:col-span-8">
             <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden h-full flex flex-col">
                 <div class="p-stack-md border-b border-outline-variant/30 flex justify-between items-center bg-surface-container-lowest">
                     <h3 class="font-headline-sm text-headline-sm text-primary">Riwayat Pemeliharaan</h3>
-                    <button class="text-secondary font-label-md text-label-md flex items-center gap-1 hover:underline">
-                        Lihat Semua
-                        <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-                    </button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
@@ -120,77 +140,15 @@ export default function LaporanView() {
                             </tr>
                         </thead>
                         <tbody class="font-body-md text-body-md">
-                            <tr class="border-b border-outline-variant/20 hover:bg-surface-container/30 transition-colors">
-                                <td class="p-4 text-on-surface whitespace-nowrap">12 Okt 2023</td>
-                                <td class="p-4 font-semibold text-primary">Mikroskop Binokuler #04</td>
-                                <td class="p-4 text-on-surface-variant">Perbaikan</td>
-                                <td class="p-4 text-on-surface">250.000</td>
-                                <td class="p-4 text-on-surface-variant max-w-xs truncate">Lensa objektif 40x buram, dibersihkan dan dikalibrasi ulang.</td>
-                                <td class="p-4">
-                                    <span class="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-[#e6f4ea] text-[#137333]">Selesai</span>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-outline-variant/20 hover:bg-surface-container/30 transition-colors bg-surface-container-lowest/50">
-                                <td class="p-4 text-on-surface whitespace-nowrap">08 Okt 2023</td>
-                                <td class="p-4 font-semibold text-primary">Neraca Analitik Ohaus</td>
-                                <td class="p-4 text-on-surface-variant">Kalibrasi</td>
-                                <td class="p-4 text-on-surface">150.000</td>
-                                <td class="p-4 text-on-surface-variant max-w-xs truncate">Kalibrasi rutin tahunan, hasil akurat.</td>
-                                <td class="p-4">
-                                    <span class="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-[#e6f4ea] text-[#137333]">Selesai</span>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-outline-variant/20 hover:bg-surface-container/30 transition-colors">
-                                <td class="p-4 text-on-surface whitespace-nowrap">05 Okt 2023</td>
-                                <td class="p-4 font-semibold text-primary">Centrifuge 8-hole</td>
-                                <td class="p-4 text-on-surface-variant">Penggantian Suku Cadang</td>
-                                <td class="p-4 text-on-surface">850.000</td>
-                                <td class="p-4 text-on-surface-variant max-w-xs truncate">Motor rotor berdengung keras, perlu ganti bearing. Menunggu sparepart.</td>
-                                <td class="p-4">
-                                    <span class="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-[#fef7e0] text-[#b06000]">Proses</span>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-outline-variant/20 hover:bg-surface-container/30 transition-colors bg-surface-container-lowest/50">
-                                <td class="p-4 text-on-surface whitespace-nowrap">28 Sep 2023</td>
-                                <td class="p-4 font-semibold text-primary">Hot Plate Stirrer</td>
-                                <td class="p-4 text-on-surface-variant">Pengecekan</td>
-                                <td class="p-4 text-on-surface">-</td>
-                                <td class="p-4 text-on-surface-variant max-w-xs truncate">Pemanas tidak berfungsi maksimal, elemen pemanas mulai aus.</td>
-                                <td class="p-4">
-                                    <span class="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-[#fce8e6] text-[#c5221f]">Rusak</span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-surface-container/30 transition-colors">
-                                <td class="p-4 text-on-surface whitespace-nowrap">15 Sep 2023</td>
-                                <td class="p-4 font-semibold text-primary">Spektrofotometer UV-Vis</td>
-                                <td class="p-4 text-on-surface-variant">Maintenance Rutin</td>
-                                <td class="p-4 text-on-surface">200.000</td>
-                                <td class="p-4 text-on-surface-variant max-w-xs truncate">Pembersihan kompartemen sampel dan pengecekan lampu. Normal.</td>
-                                <td class="p-4">
-                                    <span class="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-[#e6f4ea] text-[#137333]">Selesai</span>
-                                </td>
-                            </tr>
+                            ${rowsHTML}
                         </tbody>
                     </table>
                 </div>
-                <!-- Pagination -->
                 <div class="mt-auto p-4 border-t border-outline-variant/30 flex items-center justify-between bg-surface-container-lowest">
-                    <span class="font-body-md text-body-md text-on-surface-variant">Menampilkan 1-5 dari 42 entri</span>
-                    <div class="flex gap-1">
-                        <button class="w-8 h-8 rounded border border-outline-variant/50 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low disabled:opacity-50" disabled="">
-                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
-                        </button>
-                        <button class="w-8 h-8 rounded bg-primary text-on-primary flex items-center justify-center font-body-md text-sm">1</button>
-                        <button class="w-8 h-8 rounded border border-outline-variant/50 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low font-body-md text-sm">2</button>
-                        <button class="w-8 h-8 rounded border border-outline-variant/50 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low font-body-md text-sm">3</button>
-                        <span class="w-8 h-8 flex items-center justify-center text-on-surface-variant">...</span>
-                        <button class="w-8 h-8 rounded border border-outline-variant/50 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low">
-                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
-                        </button>
-                    </div>
+                    <span class="font-body-md text-body-md text-on-surface-variant">Menampilkan ${records.length} entri</span>
                 </div>
             </div>
         </div>
     </div>
-    `
+    `;
 }

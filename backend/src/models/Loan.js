@@ -4,6 +4,17 @@ const loanSchema = new mongoose.Schema({
     borrower: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+    },
+    borrowerName: {
+        type: String,
+        required: true,
+    },
+    borrowerRole: {
+        type: String,
+        default: '',
+    },
+    itemName: {
+        type: String,
         required: true,
     },
     items: [{
@@ -11,7 +22,7 @@ const loanSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Inventory'
         },
-        quantity: Number // In case they borrow multiple of same consumable/tool
+        quantity: Number
     }],
     requestDate: {
         type: Date,

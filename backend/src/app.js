@@ -18,6 +18,11 @@ app.use(express.urlencoded({ extended: false }));
 import inventoryRoutes from './routes/inventoryRoutes.js';
 import loanRoutes from './routes/loanRoutes.js';
 import journalRoutes from './routes/journalRoutes.js';
+import maintenanceRoutes from './routes/maintenanceRoutes.js';
+import Inventory from './models/Inventory.js';
+import Loan from './models/Loan.js';
+import Maintenance from './models/Maintenance.js';
+import Journal from './models/Journal.js';
 
 // Basic route for testing
 app.get('/', (req, res) => {
@@ -28,6 +33,38 @@ app.get('/', (req, res) => {
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/loan', loanRoutes);
 app.use('/api/journal', journalRoutes);
+app.use('/api/maintenance', maintenanceRoutes);
+
+// Dashboard stats endpoint
+app.get('/api/stats', async (req, res) => {
+    try {
+        const totalInventory = await Inventory.countDocuments();
+        const rusak = await Inventory.countDocuments({ status: 'Rusak' });
+        const dipinjam = await Inventory.countDocuments({ status: 'Dipinjam' });
+        const tersedia = await Inventory.countDocuments({ status: 'Tersedia' });
+        const perbaikan = await Inventory.countDocuments({ status: 'Perbaikan' });
+        const totalLoan = await Loan.countDocuments({ status: 'Dipinjam' });
+        const totalMaintenance = await Maintenance.countDocuments();
+        const maintenanceCost = await Maintenance.aggregate([{ $group: { _id: null, total: { $sum: '$cost' } } }]);
+        const recentJournals = await Journal.find({}).sort({ createdAt: -1 }).limit(5);
+        const recentLoans = await Loan.find({}).sort({ createdAt: -1 }).limit(5);
+
+        res.json({
+            totalInventory,
+            rusak,
+            dipinjam,
+            tersedia,
+            perbaikan,
+            totalLoan,
+            totalMaintenance,
+            maintenanceCost: maintenanceCost[0]?.total || 0,
+            recentJournals,
+            recentLoans,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
