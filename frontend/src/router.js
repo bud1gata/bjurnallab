@@ -3,6 +3,7 @@ import InventarisView from './views/inventaris.js';
 import JurnalView from './views/jurnal.js';
 import PeminjamanView from './views/peminjaman.js';
 import LaporanView from './views/laporan.js';
+import LoginView from './views/login.js';
 
 const routes = {
     '/dashboard': DashboardView,
@@ -10,6 +11,7 @@ const routes = {
     '/jurnal': JurnalView,
     '/peminjaman': PeminjamanView,
     '/laporan': LaporanView,
+    '/login': LoginView,
 };
 
 export function initRouter() {
@@ -37,9 +39,42 @@ export function initRouter() {
 
     async function renderView() {
         let path = window.location.hash.slice(1) || '/dashboard';
+        
+        // Auth Guard
+        const token = localStorage.getItem('token');
+        if (!token && path !== '/login') {
+            window.location.hash = '#/login';
+            return;
+        }
+        if (token && path === '/login') {
+            window.location.hash = '#/dashboard';
+            return;
+        }
+
         if (!routes[path]) {
             path = '/dashboard';
             window.location.hash = '#/dashboard';
+        }
+
+        // Handle Layout visibility (Sidebar/Header)
+        const sidebarNav = document.getElementById('sidebar-nav');
+        const mainWrapper = document.getElementById('main-wrapper');
+        const topHeader = document.getElementById('top-header');
+
+        if (path === '/login') {
+            if (sidebarNav) sidebarNav.style.display = 'none';
+            if (topHeader) topHeader.style.display = 'none';
+            if (mainWrapper) {
+                mainWrapper.style.marginLeft = '0';
+                mainWrapper.style.maxWidth = '100%';
+            }
+        } else {
+            if (sidebarNav) sidebarNav.style.display = 'flex';
+            if (topHeader) topHeader.style.display = 'flex';
+            if (mainWrapper) {
+                mainWrapper.style.marginLeft = '260px';
+                mainWrapper.style.maxWidth = 'calc(100% - 260px)';
+            }
         }
 
         const component = routes[path];

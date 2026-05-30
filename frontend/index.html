@@ -117,7 +117,7 @@
 </head>
 <body class="font-body-md text-body-md text-on-surface antialiased overflow-x-hidden flex">
     <!-- SideNavBar -->
-    <nav class="bg-surface-container dark:bg-surface-dim text-primary dark:text-primary-fixed fixed left-0 top-0 h-screen w-[260px] border-r border-outline-variant dark:border-outline flat no shadows flex flex-col py-stack-lg px-4 gap-stack-md z-50">
+    <nav id="sidebar-nav" class="bg-surface-container dark:bg-surface-dim text-primary dark:text-primary-fixed fixed left-0 top-0 h-screen w-[260px] border-r border-outline-variant dark:border-outline flat no shadows flex flex-col py-stack-lg px-4 gap-stack-md z-50">
         <!-- Brand Header -->
         <div class="flex items-center gap-3 px-2 mb-stack-md">
             <div class="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0 text-on-secondary">
@@ -170,17 +170,17 @@
         </div>
         <!-- Footer Tab -->
         <div class="border-t border-outline-variant pt-stack-sm mt-2">
-            <a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-error hover:bg-error-container transition-all rounded-lg font-label-md text-label-md" href="#">
+            <button onclick="window._handleLogout()" class="w-full flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-error hover:bg-error-container transition-all rounded-lg font-label-md text-label-md text-left">
                 <span class="material-symbols-outlined">logout</span>
                 Keluar
-            </a>
+            </button>
         </div>
     </nav>
     
     <!-- Main Content Wrapper -->
-    <div class="ml-[260px] flex-1 flex flex-col min-h-screen max-w-[calc(100%-260px)]">
+    <div id="main-wrapper" class="ml-[260px] flex-1 flex flex-col min-h-screen max-w-[calc(100%-260px)] transition-all duration-300">
         <!-- TopNavBar -->
-        <header class="bg-surface dark:bg-surface-container-lowest text-primary dark:text-primary-fixed full-width top-0 sticky border-b border-outline-variant dark:border-outline flat no shadows flex justify-between items-center h-16 px-gutter w-full z-40">
+        <header id="top-header" class="bg-surface dark:bg-surface-container-lowest text-primary dark:text-primary-fixed full-width top-0 sticky border-b border-outline-variant dark:border-outline flat no shadows flex justify-between items-center h-16 px-gutter w-full z-40">
             <!-- Search Bar (on_left) -->
             <div class="relative w-96 hidden sm:block">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
@@ -193,7 +193,7 @@
                     <span class="material-symbols-outlined">notifications</span>
                     <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
                 </button>
-                <button class="p-2 text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors rounded-full opacity-80 hover:opacity-100 hover:scale-95 duration-150">
+                <button onclick="window._openChangePasswordModal()" class="p-2 text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors rounded-full opacity-80 hover:opacity-100 hover:scale-95 duration-150">
                     <span class="material-symbols-outlined">settings</span>
                 </button>
                 <div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center ml-2 border border-outline-variant overflow-hidden">
@@ -206,6 +206,43 @@
         <main id="router-view" class="flex-1 p-gutter bg-surface">
             <!-- Content will be injected here -->
         </main>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="change-password-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-primary/20 backdrop-blur-sm px-4">
+        <div class="w-full max-w-md bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-2xl flex flex-col gap-4">
+            <div class="flex justify-between items-center pb-2 border-b border-outline-variant/30">
+                <h3 class="font-headline-sm text-headline-sm text-primary flex items-center gap-2">
+                    <span class="material-symbols-outlined text-secondary">lock_reset</span>
+                    Ganti Kata Sandi
+                </h3>
+                <button onclick="window._closeChangePasswordModal()" class="p-1 rounded-full hover:bg-surface-container-low transition-colors">
+                    <span class="material-symbols-outlined text-on-surface-variant">close</span>
+                </button>
+            </div>
+            
+            <div id="change-pwd-error-banner" class="hidden p-3 bg-error-container text-on-error-container rounded-lg border border-error/20 font-body-md text-body-md text-center"></div>
+            
+            <form onsubmit="window._handleChangePassword(event)" class="flex flex-col gap-4">
+                <div>
+                    <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Kata Sandi Lama</label>
+                    <input name="oldPassword" type="password" required class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant/60 rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/20 transition-all"/>
+                </div>
+                <div>
+                    <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Kata Sandi Baru</label>
+                    <input name="newPassword" type="password" required class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant/60 rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/20 transition-all"/>
+                </div>
+                <div>
+                    <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Konfirmasi Kata Sandi Baru</label>
+                    <input name="confirmPassword" type="password" required class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant/60 rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/20 transition-all"/>
+                </div>
+                
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" onclick="window._closeChangePasswordModal()" class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant rounded-xl transition-colors">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-primary text-on-primary font-label-md text-label-md rounded-xl hover:bg-primary-container transition-colors shadow-sm">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script type="module" src="/src/main.js"></script>

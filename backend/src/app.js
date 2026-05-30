@@ -19,6 +19,7 @@ import inventoryRoutes from './routes/inventoryRoutes.js';
 import loanRoutes from './routes/loanRoutes.js';
 import journalRoutes from './routes/journalRoutes.js';
 import maintenanceRoutes from './routes/maintenanceRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 import Inventory from './models/Inventory.js';
 import Loan from './models/Loan.js';
 import Maintenance from './models/Maintenance.js';
@@ -30,6 +31,7 @@ app.get('/', (req, res) => {
 });
 
 // Mount Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/loan', loanRoutes);
 app.use('/api/journal', journalRoutes);
