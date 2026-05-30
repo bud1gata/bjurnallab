@@ -15,10 +15,12 @@ window.fetch = async function (url, options = {}) {
     return originalFetch(url, options);
 };
 
-// Update TopNavBar Profile UI with logged in user initials
+// Update TopNavBar Profile UI and Sidebar Links based on user role
 function updateProfileUI() {
     const userStr = localStorage.getItem('user');
     const profileContainer = document.querySelector('header .flex.items-center.gap-4.ml-auto');
+    const navLinks = document.querySelectorAll('.nav-item');
+    const ctaWrapper = document.getElementById('sidebar-cta');
     
     if (userStr && profileContainer) {
         const user = JSON.parse(userStr);
@@ -38,6 +40,41 @@ function updateProfileUI() {
         }
         badge.innerText = initials;
         badge.title = `${user.name} (${user.role})`;
+
+        // Dynamic Navigation Hiding based on Role
+        navLinks.forEach(link => {
+            const path = link.getAttribute('data-path');
+            const parentLi = link.closest('li');
+            if (parentLi) {
+                if (user.role === 'Siswa') {
+                    // Siswa only sees Dashboard and Peminjaman
+                    if (path === '/inventaris' || path === '/jurnal' || path === '/laporan') {
+                        parentLi.classList.add('hidden');
+                    } else {
+                        parentLi.classList.remove('hidden');
+                    }
+                } else if (user.role === 'Guru') {
+                    // Guru sees Dashboard, Inventaris, Jurnal, Peminjaman. Hides Laporan.
+                    if (path === '/laporan') {
+                        parentLi.classList.add('hidden');
+                    } else {
+                        parentLi.classList.remove('hidden');
+                    }
+                } else {
+                    // Admin sees all
+                    parentLi.classList.remove('hidden');
+                }
+            }
+        });
+
+        // Hide sidebar CTA (Tambah Inventaris) for non-admins
+        if (ctaWrapper) {
+            if (user.role !== 'Admin') {
+                ctaWrapper.classList.add('hidden');
+            } else {
+                ctaWrapper.classList.remove('hidden');
+            }
+        }
     }
 }
 

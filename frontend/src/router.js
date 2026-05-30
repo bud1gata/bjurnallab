@@ -51,6 +51,23 @@ export function initRouter() {
             return;
         }
 
+        // Role-Based Route Guard
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            if (user.role === 'Siswa') {
+                if (path === '/inventaris' || path === '/jurnal' || path === '/laporan') {
+                    window.location.hash = '#/dashboard';
+                    return;
+                }
+            } else if (user.role === 'Guru') {
+                if (path === '/laporan') {
+                    window.location.hash = '#/dashboard';
+                    return;
+                }
+            }
+        }
+
         if (!routes[path]) {
             path = '/dashboard';
             window.location.hash = '#/dashboard';

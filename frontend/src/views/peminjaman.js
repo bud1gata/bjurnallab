@@ -39,6 +39,10 @@ export default async function PeminjamanView() {
         }).length
     };
 
+    const userStr = localStorage.getItem('user');
+    const user = userStr ? JSON.parse(userStr) : null;
+    const isAdmin = user && user.role === 'Admin';
+
     let rowsHTML = '';
     if (loans.length === 0) {
         rowsHTML = `<tr><td colspan="6" class="py-8 text-center text-on-surface-variant font-body-md">Belum ada data peminjaman.</td></tr>`;
@@ -49,14 +53,18 @@ export default async function PeminjamanView() {
             const itemName = loan.itemName || 'Alat';
 
             let actionHTML = '';
-            if (loan.status === 'Menunggu') {
-                actionHTML = `
-                    <div class="flex justify-end gap-2">
-                        <button onclick="window._updateLoan('${loan._id}', 'Dipinjam')" class="bg-secondary text-on-secondary font-label-md text-label-md px-3 py-1.5 rounded-lg hover:bg-secondary/90 transition-colors">Setujui</button>
-                        <button onclick="window._updateLoan('${loan._id}', 'Ditolak')" class="bg-surface border border-outline text-on-surface font-label-md text-label-md px-3 py-1.5 rounded-lg hover:bg-surface-variant transition-colors">Tolak</button>
-                    </div>`;
-            } else if (loan.status === 'Dipinjam') {
-                actionHTML = `<button onclick="window._updateLoan('${loan._id}', 'Dikembalikan')" class="bg-surface border border-secondary text-secondary font-label-md text-label-md px-3 py-1.5 rounded-lg hover:bg-secondary-fixed transition-colors">Selesai</button>`;
+            if (isAdmin) {
+                if (loan.status === 'Menunggu') {
+                    actionHTML = `
+                        <div class="flex justify-end gap-2">
+                            <button onclick="window._updateLoan('${loan._id}', 'Dipinjam')" class="bg-secondary text-on-secondary font-label-md text-label-md px-3 py-1.5 rounded-lg hover:bg-secondary/90 transition-colors">Setujui</button>
+                            <button onclick="window._updateLoan('${loan._id}', 'Ditolak')" class="bg-surface border border-outline text-on-surface font-label-md text-label-md px-3 py-1.5 rounded-lg hover:bg-surface-variant transition-colors">Tolak</button>
+                        </div>`;
+                } else if (loan.status === 'Dipinjam') {
+                    actionHTML = `<button onclick="window._updateLoan('${loan._id}', 'Dikembalikan')" class="bg-surface border border-secondary text-secondary font-label-md text-label-md px-3 py-1.5 rounded-lg hover:bg-secondary-fixed transition-colors">Selesai</button>`;
+                } else {
+                    actionHTML = `<span class="text-on-surface-variant font-label-md text-label-md">—</span>`;
+                }
             } else {
                 actionHTML = `<span class="text-on-surface-variant font-label-md text-label-md">—</span>`;
             }

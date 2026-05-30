@@ -162,7 +162,7 @@
             </li>
         </ul>
         <!-- CTA -->
-        <div class="mt-auto pb-stack-sm">
+        <div id="sidebar-cta" class="mt-auto pb-stack-sm">
             <button class="w-full bg-secondary text-on-secondary py-3 px-4 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-primary transition-colors">
                 <span class="material-symbols-outlined text-[18px]">add</span>
                 Tambah Inventaris
@@ -189,6 +189,9 @@
             
             <!-- Trailing Actions -->
             <div class="flex items-center gap-4 ml-auto">
+                <button id="admin-add-user-btn" onclick="window._openAddUserModal()" class="hidden p-2 text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors rounded-full opacity-80 hover:opacity-100 hover:scale-95 duration-150" title="Tambah Pengguna Baru">
+                    <span class="material-symbols-outlined">person_add</span>
+                </button>
                 <button class="relative p-2 text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors rounded-full opacity-80 hover:opacity-100 hover:scale-95 duration-150">
                     <span class="material-symbols-outlined">notifications</span>
                     <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
@@ -206,6 +209,50 @@
         <main id="router-view" class="flex-1 p-gutter bg-surface">
             <!-- Content will be injected here -->
         </main>
+    </div>
+
+    <!-- Add User Modal (Admin Only) -->
+    <div id="add-user-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-primary/20 backdrop-blur-sm px-4">
+        <div class="w-full max-w-md bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-2xl flex flex-col gap-4">
+            <div class="flex justify-between items-center pb-2 border-b border-outline-variant/30">
+                <h3 class="font-headline-sm text-headline-sm text-primary flex items-center gap-2">
+                    <span class="material-symbols-outlined text-secondary">person_add</span>
+                    Tambah Pengguna Baru
+                </h3>
+                <button onclick="window._closeAddUserModal()" class="p-1 rounded-full hover:bg-surface-container-low transition-colors">
+                    <span class="material-symbols-outlined text-on-surface-variant">close</span>
+                </button>
+            </div>
+            
+            <div id="add-user-error-banner" class="hidden p-3 bg-error-container text-on-error-container rounded-lg border border-error/20 font-body-md text-body-md text-center"></div>
+            
+            <form onsubmit="window._handleAddUser(event)" class="flex flex-col gap-4">
+                <div>
+                    <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Nama Lengkap</label>
+                    <input name="name" type="text" required placeholder="Budi Santoso" class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant/60 rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/20 transition-all"/>
+                </div>
+                <div>
+                    <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Alamat Email</label>
+                    <input name="email" type="email" required placeholder="budi@school.sch.id" class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant/60 rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/20 transition-all"/>
+                </div>
+                <div>
+                    <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Kata Sandi Awal</label>
+                    <input name="password" type="password" required placeholder="••••••••" class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant/60 rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/20 transition-all"/>
+                </div>
+                <div>
+                    <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Peran (Role)</label>
+                    <select name="role" required class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant/60 rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/20 transition-all">
+                        <option value="Guru">Guru (Pengajar)</option>
+                        <option value="Siswa">Siswa</option>
+                    </select>
+                </div>
+                
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" onclick="window._closeAddUserModal()" class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant rounded-xl transition-colors">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-primary text-on-primary font-label-md text-label-md rounded-xl hover:bg-primary-container transition-colors shadow-sm">Tambah Pengguna</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Change Password Modal -->

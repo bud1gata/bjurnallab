@@ -13,6 +13,10 @@ export default async function InventarisView() {
         console.error('Error fetching inventory:', error);
     }
 
+    const userStr = localStorage.getItem('user');
+    const user = userStr ? JSON.parse(userStr) : null;
+    const isAdmin = user && user.role === 'Admin';
+
     if (inventoryData.length === 0) {
         tableBodyHTML = `
             <tr>
@@ -29,6 +33,13 @@ export default async function InventarisView() {
             else if (item.status === 'Rusak') statusClass = 'bg-[#fee2e2] text-[#991b1b] border-[#fecaca]';
             else if (item.status === 'Perbaikan') statusClass = 'bg-[#fef3c7] text-[#92400e] border-[#fde68a]';
 
+            const actionCell = isAdmin 
+                ? `
+                    <button class="p-2 text-on-surface-variant hover:text-secondary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                    <button class="p-2 text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+                  `
+                : `<span class="text-on-surface-variant font-label-md text-label-md">—</span>`;
+
             return `
             <tr class="hover:bg-surface-container-low/50 transition-colors ${index % 2 !== 0 ? 'bg-surface-container-lowest/30' : ''}">
                 <td class="py-4 px-6 font-body-md text-body-md text-on-surface-variant">${index + 1}</td>
@@ -44,13 +55,21 @@ export default async function InventarisView() {
                     </span>
                 </td>
                 <td class="py-4 px-6 text-right">
-                    <button class="p-2 text-on-surface-variant hover:text-secondary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-                    <button class="p-2 text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+                    ${actionCell}
                 </td>
             </tr>
             `;
         }).join('');
     }
+
+    const headerBtn = isAdmin 
+        ? `
+            <button class="bg-secondary text-on-secondary px-6 py-3 rounded-lg font-label-md text-label-md flex items-center gap-2 hover:bg-secondary/90 transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                Tambah Item Baru
+            </button>
+          `
+        : '';
 
     return `
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-stack-lg gap-4">
@@ -58,10 +77,7 @@ export default async function InventarisView() {
             <h2 class="font-display-lg text-display-lg text-primary">Manajemen Inventaris</h2>
             <p class="font-body-md text-body-md text-on-surface-variant mt-1">Kelola dan pantau seluruh aset laboratorium.</p>
         </div>
-        <button class="bg-secondary text-on-secondary px-6 py-3 rounded-lg font-label-md text-label-md flex items-center gap-2 hover:bg-secondary/90 transition-all shadow-sm">
-            <span class="material-symbols-outlined text-[18px]">add</span>
-            Tambah Item Baru
-        </button>
+        ${headerBtn}
     </div>
     <!-- Tabs & Filters -->
     <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 mb-stack-md flex flex-col md:flex-row justify-between items-center gap-4">
