@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>B-JURNALLAB - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#75777d",
+                        "background": "#fbf8fa",
+                        "surface-container": "#f0edef",
+                        "surface-dim": "#dcd9db",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#ddc39d",
+                        "on-primary-container": "#8590a6",
+                        "on-secondary-fixed": "#00174b",
+                        "on-primary-fixed": "#111c2d",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#d8e3fb",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "primary": "#091426",
+                        "tertiary-container": "#35260c",
+                        "outline-variant": "#c5c6cd",
+                        "surface-tint": "#545f73",
+                        "on-tertiary-fixed": "#271902",
+                        "surface-variant": "#e4e2e3",
+                        "inverse-surface": "#303032",
+                        "secondary-fixed": "#dbe1ff",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "primary-container": "#1e293b",
+                        "inverse-primary": "#bcc7de",
+                        "on-background": "#1b1b1d",
+                        "secondary-container": "#316bf3",
+                        "on-tertiary-fixed-variant": "#564427",
+                        "surface-container-low": "#f5f3f4",
+                        "surface": "#fbf8fa",
+                        "surface-container-high": "#eae7e9",
+                        "on-tertiary-container": "#a38c6a",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "on-surface-variant": "#45474c",
+                        "on-surface": "#1b1b1d",
+                        "tertiary": "#1e1200",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#fadfb8",
+                        "error-container": "#ffdad6",
+                        "secondary": "#0051d5",
+                        "primary-fixed-dim": "#bcc7de",
+                        "on-secondary-container": "#fefcff",
+                        "surface-container-highest": "#e4e2e3",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#fbf8fa",
+                        "inverse-on-surface": "#f3f0f2",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "1.5rem",
+                        "stack-md": "1rem",
+                        "container-max": "1440px",
+                        "margin-mobile": "1rem",
+                        "stack-sm": "0.5rem",
+                        "stack-lg": "2rem"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        body { background-color: #fbf8fa; }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md text-on-surface antialiased overflow-x-hidden flex">
+    <!-- SideNavBar -->
+    <nav class="bg-surface-container dark:bg-surface-dim text-primary dark:text-primary-fixed fixed left-0 top-0 h-screen w-[260px] border-r border-outline-variant dark:border-outline flat no shadows flex flex-col py-stack-lg px-4 gap-stack-md z-50">
+        <!-- Brand Header -->
+        <div class="flex items-center gap-3 px-2 mb-stack-md">
+            <div class="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0 text-on-secondary">
+                <span class="material-symbols-outlined font-headline-md text-headline-md">science</span>
+            </div>
+            <div>
+                <h1 class="font-headline-md text-headline-md font-black tracking-tight text-primary dark:text-primary-fixed">B-JURNALLAB</h1>
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase">Lab Management System</p>
+            </div>
+        </div>
+        <!-- Navigation Links -->
+        <ul id="nav-links" class="flex flex-col gap-1 flex-1">
+            <li>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:text-primary hover:bg-surface-variant transition-all rounded-lg font-label-md text-label-md" href="#/dashboard" data-path="/dashboard">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:text-primary hover:bg-surface-variant transition-all rounded-lg font-label-md text-label-md" href="#/inventaris" data-path="/inventaris">
+                    <span class="material-symbols-outlined">inventory_2</span>
+                    Inventaris
+                </a>
+            </li>
+            <li>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:text-primary hover:bg-surface-variant transition-all rounded-lg font-label-md text-label-md" href="#/jurnal" data-path="/jurnal">
+                    <span class="material-symbols-outlined">menu_book</span>
+                    Jurnal Harian
+                </a>
+            </li>
+            <li>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:text-primary hover:bg-surface-variant transition-all rounded-lg font-label-md text-label-md" href="#/peminjaman" data-path="/peminjaman">
+                    <span class="material-symbols-outlined">handshake</span>
+                    Peminjaman
+                </a>
+            </li>
+            <li>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:text-primary hover:bg-surface-variant transition-all rounded-lg font-label-md text-label-md" href="#/laporan" data-path="/laporan">
+                    <span class="material-symbols-outlined">analytics</span>
+                    Laporan
+                </a>
+            </li>
+        </ul>
+        <!-- CTA -->
+        <div class="mt-auto pb-stack-sm">
+            <button class="w-full bg-secondary text-on-secondary py-3 px-4 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-primary transition-colors">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                Tambah Inventaris
+            </button>
+        </div>
+        <!-- Footer Tab -->
+        <div class="border-t border-outline-variant pt-stack-sm mt-2">
+            <a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-error hover:bg-error-container transition-all rounded-lg font-label-md text-label-md" href="#">
+                <span class="material-symbols-outlined">logout</span>
+                Keluar
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Main Content Wrapper -->
+    <div class="ml-[260px] flex-1 flex flex-col min-h-screen max-w-[calc(100%-260px)]">
+        <!-- TopNavBar -->
+        <header class="bg-surface dark:bg-surface-container-lowest text-primary dark:text-primary-fixed full-width top-0 sticky border-b border-outline-variant dark:border-outline flat no shadows flex justify-between items-center h-16 px-gutter w-full z-40">
+            <!-- Search Bar (on_left) -->
+            <div class="relative w-96 hidden sm:block">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                <input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-on-surface" placeholder="Cari alat, bahan, atau jurnal..." type="text"/>
+            </div>
+            
+            <!-- Trailing Actions -->
+            <div class="flex items-center gap-4 ml-auto">
+                <button class="relative p-2 text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors rounded-full opacity-80 hover:opacity-100 hover:scale-95 duration-150">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+                </button>
+                <button class="p-2 text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors rounded-full opacity-80 hover:opacity-100 hover:scale-95 duration-150">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+                <div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center ml-2 border border-outline-variant overflow-hidden">
+                    <img alt="User Profile Admin" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC182Njusx2GMiwhhDFGSOSKI0zIF17hti4gxSS4oKbimxnz5QrhSsBa0hseYMi7QAoMKx0hCmctDXvWPpyyBVSTM1ZT4A8vc7t3oqnMX3nzbr38w1C29bakOLpnwnN5OOhJ_5X4EWTbl54Q_hnND9YlcReRo5lQpKevRPP-UKq9FbXZ7ZMhaB6JL9hNjT8Aif0Q3o8gt5Cx3-LAu5mirla7AHH8mpKVJauJDX2ir9v8503bzFc4FTgulyDs8JU_xjEnygwHHSw4mU"/>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Canvas -->
+        <main id="router-view" class="flex-1 p-gutter bg-surface">
+            <!-- Content will be injected here -->
+        </main>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>

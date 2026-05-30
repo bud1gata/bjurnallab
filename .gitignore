@@ -1,0 +1,17 @@
+# Environment Variables
+.env
+.env.*
+*.env
+
+# Referensi Desain
+referensi-desain/
+stitch_b_jurnallab_management_system.zip
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build outputs
+frontend/dist/
+backend/dist/
